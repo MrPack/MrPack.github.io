@@ -1,0 +1,171 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is up-to-date with 'origin/master'.
+#
+# Changes to be committed:
+#	new file:   .gitignore
+#	new file:   _config.yml
+#	new file:   package.json
+#	new file:   scaffolds/draft.md
+#	new file:   scaffolds/page.md
+#	new file:   scaffolds/post.md
+#	new file:   source/_posts/hello-world.md
+#	new file:   themes/landscape/.gitignore
+#	new file:   themes/landscape/Gruntfile.js
+#	new file:   themes/landscape/LICENSE
+#	new file:   themes/landscape/README.md
+#	new file:   themes/landscape/_config.yml
+#	new file:   themes/landscape/languages/default.yml
+#	new file:   themes/landscape/languages/fr.yml
+#	new file:   themes/landscape/languages/nl.yml
+#	new file:   themes/landscape/languages/no.yml
+#	new file:   themes/landscape/languages/ru.yml
+#	new file:   themes/landscape/languages/zh-CN.yml
+#	new file:   themes/landscape/languages/zh-TW.yml
+#	new file:   themes/landscape/layout/_partial/after-footer.ejs
+#	new file:   themes/landscape/layout/_partial/archive-post.ejs
+#	new file:   themes/landscape/layout/_partial/archive.ejs
+#	new file:   themes/landscape/layout/_partial/article.ejs
+#	new file:   themes/landscape/layout/_partial/footer.ejs
+#	new file:   themes/landscape/layout/_partial/google-analytics.ejs
+#	new file:   themes/landscape/layout/_partial/head.ejs
+#	new file:   themes/landscape/layout/_partial/header.ejs
+#	new file:   themes/landscape/layout/_partial/mobile-nav.ejs
+#	new file:   themes/landscape/layout/_partial/post/category.ejs
+#	new file:   themes/landscape/layout/_partial/post/date.ejs
+#	new file:   themes/landscape/layout/_partial/post/gallery.ejs
+#	new file:   themes/landscape/layout/_partial/post/nav.ejs
+#	new file:   themes/landscape/layout/_partial/post/tag.ejs
+#	new file:   themes/landscape/layout/_partial/post/title.ejs
+#	new file:   themes/landscape/layout/_partial/sidebar.ejs
+#	new file:   themes/landscape/layout/_widget/archive.ejs
+#	new file:   themes/landscape/layout/_widget/category.ejs
+#	new file:   themes/landscape/layout/_widget/recent_posts.ejs
+#	new file:   themes/landscape/layout/_widget/tag.ejs
+#	new file:   themes/landscape/layout/_widget/tagcloud.ejs
+#	new file:   themes/landscape/layout/archive.ejs
+#	new file:   themes/landscape/layout/category.ejs
+#	new file:   themes/landscape/layout/index.ejs
+#	new file:   themes/landscape/layout/layout.ejs
+#	new file:   themes/landscape/layout/page.ejs
+#	new file:   themes/landscape/layout/post.ejs
+#	new file:   themes/landscape/layout/tag.ejs
+#	new file:   themes/landscape/package.json
+#	new file:   themes/landscape/scripts/fancybox.js
+#	new file:   themes/landscape/source/css/_extend.styl
+#	new file:   themes/landscape/source/css/_partial/archive.styl
+#	new file:   themes/landscape/source/css/_partial/article.styl
+#	new file:   themes/landscape/source/css/_partial/comment.styl
+#	new file:   themes/landscape/source/css/_partial/footer.styl
+#	new file:   themes/landscape/source/css/_partial/header.styl
+#	new file:   themes/landscape/source/css/_partial/highlight.styl
+#	new file:   themes/landscape/source/css/_partial/mobile.styl
+#	new file:   themes/landscape/source/css/_partial/sidebar-aside.styl
+#	new file:   themes/landscape/source/css/_partial/sidebar-bottom.styl
+#	new file:   themes/landscape/source/css/_partial/sidebar.styl
+#	new file:   themes/landscape/source/css/_util/grid.styl
+#	new file:   themes/landscape/source/css/_util/mixin.styl
+#	new file:   themes/landscape/source/css/_variables.styl
+#	new file:   themes/landscape/source/css/fonts/FontAwesome.otf
+#	new file:   themes/landscape/source/css/fonts/fontawesome-webfont.eot
+#	new file:   themes/landscape/source/css/fonts/fontawesome-webfont.svg
+#	new file:   themes/landscape/source/css/fonts/fontawesome-webfont.ttf
+#	new file:   themes/landscape/source/css/fonts/fontawesome-webfont.woff
+#	new file:   themes/landscape/source/css/images/banner.jpg
+#	new file:   themes/landscape/source/css/style.styl
+#	new file:   themes/landscape/source/fancybox/blank.gif
+#	new file:   themes/landscape/source/fancybox/fancybox_loading.gif
+#	new file:   themes/landscape/source/fancybox/fancybox_loading@2x.gif
+#	new file:   themes/landscape/source/fancybox/fancybox_overlay.png
+#	new file:   themes/landscape/source/fancybox/fancybox_sprite.png
+#	new file:   themes/landscape/source/fancybox/fancybox_sprite@2x.png
+#	new file:   themes/landscape/source/fancybox/helpers/fancybox_buttons.png
+#	new file:   themes/landscape/source/fancybox/helpers/jquery.fancybox-buttons.css
+#	new file:   themes/landscape/source/fancybox/helpers/jquery.fancybox-buttons.js
+#	new file:   themes/landscape/source/fancybox/helpers/jquery.fancybox-media.js
+#	new file:   themes/landscape/source/fancybox/helpers/jquery.fancybox-thumbs.css
+#	new file:   themes/landscape/source/fancybox/helpers/jquery.fancybox-thumbs.js
+#	new file:   themes/landscape/source/fancybox/jquery.fancybox.css
+#	new file:   themes/landscape/source/fancybox/jquery.fancybox.js
+#	new file:   themes/landscape/source/fancybox/jquery.fancybox.pack.js
+#	new file:   themes/landscape/source/js/script.js
+#	new file:   themes/next
+#
+# Changes not staged for commit:
+#	deleted:    2016/10/19/hello-world/index.html
+#	deleted:    CNAME
+#	deleted:    archives/2016/10/index.html
+#	deleted:    archives/2016/index.html
+#	deleted:    archives/index.html
+#	deleted:    css/main.css
+#	deleted:    images/avatar.gif
+#	deleted:    images/cc-by-nc-nd.svg
+#	deleted:    images/cc-by-nc-sa.svg
+#	deleted:    images/cc-by-nc.svg
+#	deleted:    images/cc-by-nd.svg
+#	deleted:    images/cc-by-sa.svg
+#	deleted:    images/cc-by.svg
+#	deleted:    images/cc-zero.svg
+#	deleted:    images/loading.gif
+#	deleted:    images/placeholder.gif
+#	deleted:    images/quote-l.svg
+#	deleted:    images/quote-r.svg
+#	deleted:    images/searchicon.png
+#	deleted:    index.html
+#	deleted:    js/src/affix.js
+#	deleted:    js/src/bootstrap.js
+#	deleted:    js/src/hook-duoshuo.js
+#	deleted:    js/src/motion.js
+#	deleted:    js/src/post-details.js
+#	deleted:    js/src/schemes/pisces.js
+#	deleted:    js/src/scrollspy.js
+#	deleted:    js/src/utils.js
+#	modified:   themes/next (modified content)
+#	deleted:    vendors/fancybox/source/blank.gif
+#	deleted:    vendors/fancybox/source/fancybox_loading.gif
+#	deleted:    vendors/fancybox/source/fancybox_loading@2x.gif
+#	deleted:    vendors/fancybox/source/fancybox_overlay.png
+#	deleted:    vendors/fancybox/source/fancybox_sprite.png
+#	deleted:    vendors/fancybox/source/fancybox_sprite@2x.png
+#	deleted:    vendors/fancybox/source/helpers/fancybox_buttons.png
+#	deleted:    vendors/fancybox/source/helpers/jquery.fancybox-buttons.css
+#	deleted:    vendors/fancybox/source/helpers/jquery.fancybox-buttons.js
+#	deleted:    vendors/fancybox/source/helpers/jquery.fancybox-media.js
+#	deleted:    vendors/fancybox/source/helpers/jquery.fancybox-thumbs.css
+#	deleted:    vendors/fancybox/source/helpers/jquery.fancybox-thumbs.js
+#	deleted:    vendors/fancybox/source/jquery.fancybox.css
+#	deleted:    vendors/fancybox/source/jquery.fancybox.js
+#	deleted:    vendors/fancybox/source/jquery.fancybox.pack.js
+#	deleted:    vendors/fastclick/LICENSE
+#	deleted:    vendors/fastclick/README.html
+#	deleted:    vendors/fastclick/bower.json
+#	deleted:    vendors/fastclick/lib/fastclick.js
+#	deleted:    vendors/fastclick/lib/fastclick.min.js
+#	deleted:    vendors/font-awesome/HELP-US-OUT.txt
+#	deleted:    vendors/font-awesome/bower.json
+#	deleted:    vendors/font-awesome/css/font-awesome.css
+#	deleted:    vendors/font-awesome/css/font-awesome.css.map
+#	deleted:    vendors/font-awesome/css/font-awesome.min.css
+#	deleted:    vendors/font-awesome/fonts/FontAwesome.otf
+#	deleted:    vendors/font-awesome/fonts/fontawesome-webfont.eot
+#	deleted:    vendors/font-awesome/fonts/fontawesome-webfont.svg
+#	deleted:    vendors/font-awesome/fonts/fontawesome-webfont.ttf
+#	deleted:    vendors/font-awesome/fonts/fontawesome-webfont.woff
+#	deleted:    vendors/font-awesome/fonts/fontawesome-webfont.woff2
+#	deleted:    vendors/jquery/index.js
+#	deleted:    vendors/jquery_lazyload/CONTRIBUTING.html
+#	deleted:    vendors/jquery_lazyload/README.html
+#	deleted:    vendors/jquery_lazyload/bower.json
+#	deleted:    vendors/jquery_lazyload/jquery.lazyload.js
+#	deleted:    vendors/jquery_lazyload/jquery.scrollstop.js
+#	deleted:    vendors/ua-parser-js/dist/ua-parser.min.js
+#	deleted:    vendors/ua-parser-js/dist/ua-parser.pack.js
+#	deleted:    vendors/velocity/bower.json
+#	deleted:    vendors/velocity/velocity.js
+#	deleted:    vendors/velocity/velocity.min.js
+#	deleted:    vendors/velocity/velocity.ui.js
+#	deleted:    vendors/velocity/velocity.ui.min.js
+#
+
