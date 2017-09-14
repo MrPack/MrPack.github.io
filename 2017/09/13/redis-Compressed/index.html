@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><meta name="author" content="Author Name,name@example.com"><title>redis kv存储压缩优化方案 · 喵？喵？喵？</title><meta name="description" content="一、优化缘由主站和各个项目的KV存储比较简单粗暴，一般读出cms配置，或者查询出一个数组列表就直接设置为KV，导致存储空间浪费，从redis到服务端的数据传输过大，高峰期一个10KB的大key 上万QPS就可能打满网卡，导致redis延时过高，接口响应下降。因此探索对key进行压缩，使用Snappy"><meta name="keywords" content="Hexo,HTML,CSS,android,Linux"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="renderer" content="webkit"><link rel="short icon" href="/images/favicon.png" type="image/x-icon"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/blog_basic.css"><link rel="stylesheet" href="/css/font-awesome.min.css"><link rel="alternate" type="application/atom+xml" title="ATOM 1.0" href="/atom.xml"></head><body><div class="sidebar animated fadeInDown"><div class="logo-title"><div class="title"><img src="/images/logo@2x.png" style="width:127px;"><h3 title=""><a href="/">喵？喵？喵？</a></h3><div class="description"><p>Nothing lasts forever.</p></div></div></div><ul class="social-links"><li><a href="http://weibo.com/http://weibo.com/maoerorz"><i class="fa fa-weibo"></i></a></li><li><a href="http://github.com/https://github.com/MrPack"><i class="fa fa-github"></i></a></li></ul><div class="footer"><a target="_blank" href="/"><span>Theme by </span></a><a href="https://www.caicai.me"> CaiCai </a><span>&</span><a href="https://github.com/Ben02/hexo-theme-Anatole"> Ben</a><div class="by_farbox"><a href="https://hexo.io/zh-cn/" target="_blank">Proudly published with Hexo&#65281;</a></div></div></div><div class="main"><div class="page-top animated fadeInDown"><div class="nav"><li><a href="/">首页</a></li><li><a href="/about">关于</a></li><li><a href="/archives">归档</a></li><li><a href="/links">友链</a></li></div><div class="information"><div class="back_btn"><li><a onclick="window.history.go(-1)" class="fa fa-chevron-left"> </a></li></div><div class="avatar"><img src="/images/favicon.png"></div></div></div><div class="autopagerize_page_element"><div class="content"><div class="post-page">
+
+<div class="post animated fadeInDown"><div class="post-title"><h3><a>redis kv存储压缩优化方案</a></h3></div><div class="post-content"><h2 id="一、优化缘由"><a href="#一、优化缘由" class="headerlink" title="一、优化缘由"></a>一、优化缘由</h2><p>主站和各个项目的KV存储比较简单粗暴，一般读出cms配置，或者查询出一个数组列表就直接设置为KV，导致存储空间浪费，从redis到服务端的数据传输过大，高峰期一个10KB的大key 上万QPS就可能打满网卡，导致redis延时过高，接口响应下降。<br>因此探索对key进行压缩，使用Snappy 和 zlib进行压缩，并比较效率</p>
+<h2 id="二、zlib"><a href="#二、zlib" class="headerlink" title="二、zlib"></a>二、zlib</h2><blockquote>
+<p>php原生支持zlib格式压缩 </p>
+</blockquote>
+<p>zlib是提供资料压缩之用的函式库，由Jean-loup Gailly与Mark Adler所开发，初版0.9版在1995年5月1日发表。zlib使用DEFLATE算法，最初是为libpng函式库所写的，后来普遍为许多软件所使用。此函式库为自由软件，使用zlib授权。<br>　　zlib是用于资料压缩的函式库，由Jean-loup Gailly与Mark Adler所开发，是使用抽象化的DEFLATE压缩算法gzip文件压缩程序。初版0.9版在1995年5月1日发表，最初是为libpng函式库所写的，后来普遍为许多软件所使用。此函式库为自由软件，使用zlib授权。<br>　　截至2007年3月，zlib是包含在Coverity的美国国土安全部赞助者选择继续审查的开源项目。<br>今天，zlib是一种事实上的业界标准，以至于在标准文档中，zlib和DEFLATE常常互换使用。数以千计的应用程序直接或间接依靠zlib压缩函式库<br>zlib和gzip是一回事，gzip不过外面多了一个文件格式，作者都是同一个人。</p>
+<h2 id="三、Snappy"><a href="#三、Snappy" class="headerlink" title="三、Snappy"></a>三、Snappy</h2><p>Snappy的前身是Zippy。虽然只是一个数据压缩库，它却被Google用于许多内部项目程，其中就包括BigTable，MapReduce和RPC。<br>BigTable中采用的是Zippy算法，目标是达到尽可能快的压缩和解压速度，同时减少对CPU的消耗。<br>HBase中，在Snappy发布之前（Google 2011年对外发布Snappy），采用的LZO算法，目标和BigTable类似；在Snappy发布之后，建议采用Snappy算法（参考《HBase: The Definitive Guide》）</p>
+<p><strong>性能比较：</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Algorithm</th>
+<th style="text-align:left">% remaining</th>
+<th style="text-align:right">Encoding</th>
+<th style="text-align:right">Decoding</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">GZIP</td>
+<td style="text-align:left">13.4%</td>
+<td style="text-align:right">21 MB/s</td>
+<td style="text-align:right">118 MB/s</td>
+</tr>
+<tr>
+<td style="text-align:left">LZO</td>
+<td style="text-align:left">20.5%</td>
+<td style="text-align:right">135 MB/s</td>
+<td style="text-align:right">410 MB/s</td>
+</tr>
+<tr>
+<td style="text-align:left">Zippy/Snappy</td>
+<td style="text-align:left">22.2%</td>
+<td style="text-align:right">172 MB/s</td>
+<td style="text-align:right">409 MB/s</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>GZIP的压缩率最高，但是其实CPU密集型的，对CPU的消耗比其他算法要多，压缩和解压速度也慢；</li>
+<li>LZO的压缩率居中，比GZIP要低一些，但是压缩和解压速度明显要比GZIP快很多，其中解压速度快的更多；</li>
+<li>Zippy/Snappy的压缩率最低，而压缩和解压速度要稍微比LZO要快一些。</li>
+</ul>
+<h2 id="四、实测压缩效果"><a href="#四、实测压缩效果" class="headerlink" title="四、实测压缩效果"></a>四、实测压缩效果</h2><p>使用50KB的 所有首页推荐位（见附录）做测试，每次先对redis flushall，写入10000条相同数据，压缩和解压在客户端进行，redis存压缩后的数据，siege进行压测，观察TPS变化和CPU使用变化<br>分别用pylon-php和golang进行压测</p>
+<p>siege -c 200 -r 100  -H “host:xxxxxxx.xx” “<a href="http://10.xx.xx.xxx/index_test_snappy_get" target="_blank" rel="external">http://10.xx.xx.xxx/index_test_snappy_get</a>“ -b<br>服务器8核  16GB</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Redis容量</th>
+<th>Php Tps</th>
+<th>Golang Tps</th>
+<th>Redis数据传输kbps(go)</th>
+<th>Redis ops(go)</th>
+<th>Cpu</th>
+<th>Mem</th>
+<th>Load</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>无压缩</td>
+<td>510MB</td>
+<td>430</td>
+<td>1330</td>
+<td>140832</td>
+<td>1845</td>
+<td>300%</td>
+<td>0.3%</td>
+<td>无显著变化</td>
+</tr>
+<tr>
+<td>snappy</td>
+<td>157M</td>
+<td>447</td>
+<td>1296</td>
+<td>22613</td>
+<td>2051</td>
+<td>300%</td>
+<td>0.3%</td>
+<td>无显著变化</td>
+</tr>
+<tr>
+<td>zlib</td>
+<td>123M</td>
+<td>460</td>
+<td>1154</td>
+<td>9660</td>
+<td>1544</td>
+<td>300%</td>
+<td>0.3%</td>
+<td>无显著变化</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>客户端进行压缩时CPU用量和解压时差不多，目前看对服务器都没有太大影响。</p>
+</blockquote>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>存储上用zlib最省空间，性能消耗上在我们的简单场景下和snappy没有明显差别，zlib压缩php原生支持 golang也是原生支持。<strong><em>当value超过1KB时使用zlib压缩可节省redis 76%空间，节省76%网络传输量，算下来10台Redis Slave可节约机器下线7台。</em></strong><br>当字符串较小，无冗余信息时，压缩效果不好，甚至占用空间更大。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">cat press.php </div><div class="line"></div><div class="line"><span class="meta">&lt;?php</span></div><div class="line">$text = <span class="string">"qwertyuiop asdfghjkl;' zxcvbnm,.QW ERTYYUIOOPK JDFFD ZXCVBNM"</span>;</div><div class="line"><span class="keyword">echo</span> strlen($text).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(gzcompress($text)).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(snappy_compress($text)).PHP_EOL;</div><div class="line">$text = <span class="string">"主站和各个项目的KV存储比较简单粗暴，一般读出cms配置，或者查询出一个数组列表就直接设置为KV，导致存储空间浪费，从redis到服务端的数据传输过大，高峰期一个10KB的大key 上万QPS就可能打满网卡，导致redis延时过高，接口响应下降。"</span>;</div><div class="line"><span class="keyword">echo</span> strlen($text).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(gzcompress($text)).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(snappy_compress($text)).PHP_EOL;</div><div class="line"></div><div class="line">$text = <span class="string">"zlib是提供资料压缩之用的函式库，由Jean-loup Gailly与Mark Adler所开发，初版0.9版在1995年5月1日发表。zlib使用DEFLATE算法，最初是为libpng函式库所写的，后来普遍为许多软件所使用。此函式库为自由软件，使用zlib授权。</span></div><div class="line"><span class="string">zlib是用于资料压缩的函式库，由Jean-loup Gailly与Mark Adler所开发，是使用抽象化的DEFLATE压缩算法gzip文件压缩程序。初版0.9版在1995年5月1日发表，最初是为libpng函式库所写的，后来普遍为许多软件所使用。此函式库为自由软件，使用zlib授权。</span></div><div class="line"><span class="string">截至2007年3月，zlib是包含在Coverity的美国国土安全部赞助者选择继续审查的开源项目。"</span>;</div><div class="line"><span class="keyword">echo</span> strlen($text).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(gzcompress($text)).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(snappy_compress($text)).PHP_EOL;</div><div class="line"></div><div class="line">$text = <span class="string">'&#123;"slider":[&#123;"title":"\u4f60\u4eec\u522b\u5e26\u574f\u6211\u554a\u3002\u6211\u53ea\u60f3\u9759\u9759\u7684\u4e0a\u5206\uff01","qcmsint1":"2","qcmsint3":"0","qcmsint4":"0","qcmsint5":"0","qcmsstr3":"","qcmsstr4":"","qcmsstr5":"","bigimg":"http:\/\/i0.pdim.gs\/t01c42ec0a1e006c35f.jpg","smallimg":"http:\/\/i7.pdim.gs\/a943e089e761394bc0a48225746a99da.jpeg","roomid":"27337","roomurl":"","order":"2","brief":"","channel":"","nickname":"","room_key":"4b0904bbdb295b039405d8a7879ae43b","name":"\u4f60\u4eec\u522b\u5e26\u574f\u6211\u554a\u3002\u6211\u53ea\u60f3\u9759\u9759\u7684\u4e0a\u5206\uff01","notice":"\u65b0\u6d6a\u5fae\u535a\uff1a\u718a\u732bTV\u5c0f\u65b0\n\u7c89\u4e1d\u7fa4\uff1a529383459\n\u4e8c \u7fa4\uff1a384189420","classification":&#123;"cname":"\u82f1\u96c4\u8054\u76df","ename":"lol"&#125;,"person_num":"1","details":"","start_time":"1445669692","end_time":"0","schedule":"0","status":"2","stream_status":"1","watermark_switch":"2","watermark_loc":"1","tag":"","tag_switch":"1","tag_color":"1","url":"http:\/\/\/27337","stream_addr":&#123;"HD":"","OD":"","SD":""&#125;,"plflag":"2_3"&#125;,&#123;"title":"\u661f\u82cf\uff1a20-25\u53f7\u51fa\u56fdsLi\u8054\u8d5b\u89e3\u8bf4","qcmsint1":"5","qcmsint3":"0","qcmsint4":"0","qcmsint5":"0","qcmsstr3":"","qcmsstr4":"","qcmsstr5":"","bigimg":'</span>;</div><div class="line"><span class="keyword">echo</span> strlen($text).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(gzcompress($text)).PHP_EOL;</div><div class="line"><span class="keyword">echo</span> strlen(snappy_compress($text)).PHP_EOL;</div></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="number">60</span>  <span class="comment">//原始长度</span></div><div class="line"><span class="number">68</span> <span class="comment">//zlib压缩</span></div><div class="line"><span class="number">62</span> <span class="comment">//snappy压缩</span></div><div class="line"><span class="number">313</span><span class="comment">//原始长度</span></div><div class="line"><span class="number">276</span> <span class="comment">//zlib压缩</span></div><div class="line"><span class="number">306</span> <span class="comment">//snappy压缩</span></div><div class="line"><span class="number">732</span><span class="comment">//原始长度</span></div><div class="line"><span class="number">403</span> <span class="comment">//zlib压缩</span></div><div class="line"><span class="number">503</span> <span class="comment">//snappy压缩</span></div><div class="line"><span class="number">1270</span><span class="comment">//原始长度</span></div><div class="line"><span class="number">570</span> <span class="comment">//zlib压缩</span></div><div class="line"><span class="number">859</span> <span class="comment">//snappy压缩</span></div></pre></td></tr></table></figure>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>参考资料：<br><a href="http://www.cnblogs.com/panfeng412/archive/2012/12/24/applications-scenario-summary-of-compression-algorithms.html" target="_blank" rel="external">http://www.cnblogs.com/panfeng412/archive/2012/12/24/applications-scenario-summary-of-compression-algorithms.html</a>   GZIP、LZO、Zippy/Snappy压缩算法应用场景小结<br><a href="http://www.cppblog.com/woaidongmao/archive/2009/09/07/95485.html" target="_blank" rel="external">http://www.cppblog.com/woaidongmao/archive/2009/09/07/95485.html</a> zlib与gzip<br><a href="http://blog.csdn.net/peilw625311/article/details/7440978" target="_blank" rel="external">http://blog.csdn.net/peilw625311/article/details/7440978</a>  deflate压缩算法</p>
+</div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2017-09-13</span><i class="fa fa-tag"></i><a href="/tags/redis/" title="redis" class="tag">redis </a></div></div></div></div><div class="share"><div class="evernote"><a href="javascript:(function(){EN_CLIP_HOST='http://www.evernote.com';try{var%20x=document.createElement('SCRIPT');x.type='text/javascript';x.src=EN_CLIP_HOST+'/public/bookmarkClipper.js?'+(new%20Date().getTime()/100000);document.getElementsByTagName('head')[0].appendChild(x);}catch(e){location.href=EN_CLIP_HOST+'/clip.action?url='+encodeURIComponent(location.href)+'&amp;title='+encodeURIComponent(document.title);}})();" ref="nofollow" target="_blank" class="fa fa-bookmark"></a></div><div class="weibo"><a href="javascript:void((function(s,d,e){try{}catch(e){}var f='http://service.weibo.com/share/share.php?',u=d.location.href,p=['url=',e(u),'&amp;title=',e(d.title),'&amp;appkey=2924220432'].join('');function a(){if(!window.open([f,p].join(''),'mb',['toolbar=0,status=0,resizable=1,width=620,height=450,left=',(s.width-620)/2,',top=',(s.height-450)/2].join('')))u.href=[f,p].join('');};if(/Firefox/.test(navigator.userAgent)){setTimeout(a,0)}else{a()}})(screen,document,encodeURIComponent));" class="fa fa-weibo"></a></div><div class="twitter"><a href="http://twitter.com/home?status=,http://b.icodeall.com/2017/09/13/redis-Compressed/,喵？喵？喵？,redis kv存储压缩优化方案,;" class="fa fa-twitter"></a></div></div><div class="pagination"><ul class="clearfix"><li class="pre pagbuttons"><a role="navigation" href="/2017/09/14/REDIS-I/" title="Redis介绍与应用优化_分享记录" class="btn">上一篇</a></li><li class="next pagbuttons"><a role="navigation" href="/2017/09/07/learn-regex/" title="Learn Regex" class="btn">下一篇</a></li></ul></div></div></div></div></div><script src="/js/jquery.js"></script><script src="/js/jquery-migrate-1.2.1.min.js"></script><script src="/js/jquery.appear.js"></script></body></html>

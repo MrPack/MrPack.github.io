@@ -7,6 +7,8 @@ Redis介绍REmote DIctionary Server
 SDS
 ...</p></div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2017-09-14</span><i class="fa fa-tag"></i><a href="/tags/redis/" title="redis" class="tag">redis </a></div></div></div></div>
 
+<div class="post animated fadeInDown"><div class="post-title"><h3><a href="/2017/09/13/redis-Compressed/">redis kv存储压缩优化方案</a></h3></div><div class="post-content"><p>一、优化缘由主站和各个项目的KV存储比较简单粗暴，一般读出cms配置，或者查询出一个数组列表就直接设置为KV，导致存储空间浪费，从redis到服务端的数据传输过大，高峰期一个10KB的大key 上万QPS就可能打满网卡，导致redis延时过高，接口响应下降。因此探索对key进行压缩，使用Snappy 和 zlib...</p></div><div class="post-footer"><div class="meta"><div class="info"><i class="fa fa-sun-o"></i><span class="date">2017-09-13</span><i class="fa fa-tag"></i><a href="/tags/redis/" title="redis" class="tag">redis </a></div></div></div></div>
+
 <div class="post animated fadeInDown"><div class="post-title"><h3><a href="/2017/09/07/learn-regex/">Learn Regex</a></h3></div><div class="post-content"><p>
 什么是正则表达式 ？
 正则表达式是一种被用于从文本中检索符合某些特定模式的文本。
