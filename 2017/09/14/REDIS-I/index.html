@@ -6,7 +6,7 @@ Redis介绍REmote DIctionary Server
 <div class="post animated fadeInDown"><div class="post-title"><h3><a>Redis介绍与应用优化_分享记录</a></h3></div><div class="post-content"><h1 id="Redis介绍与应用优化分享记录"><a href="#Redis介绍与应用优化分享记录" class="headerlink" title="Redis介绍与应用优化分享记录"></a><em>Redis介绍与应用优化</em>分享记录</h1><p>不久之前在公司做了一次redis的相关分享，再次做一下记录。</p>
 <h2 id="Redis介绍"><a href="#Redis介绍" class="headerlink" title="Redis介绍"></a>Redis介绍</h2><p><strong>RE</strong>mote <strong>DI</strong>ctionary <strong>S</strong>erver</p>
 <p>• 丰富的数据类型<br>• 同步(全量、增量)<br>• 集群方案<br>• 单进程，串行<br>• 持久化（<em>具体答疑请看另一篇文章</em>）<br>• 单机多实例<br>• epoll</p>
-<h3 id="数据结构层次"><a href="#数据结构层次" class="headerlink" title="数据结构层次"></a>数据结构层次</h3><p><img src="media/15053550850890/15053557568387.jpg" alt=""></p>
+<h3 id="数据结构层次"><a href="#数据结构层次" class="headerlink" title="数据结构层次"></a>数据结构层次</h3><p><img src="http://o8w94dij3.bkt.clouddn.com/redis%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84.png" alt="数据结构层次"></p>
 <h4 id="SDS"><a href="#SDS" class="headerlink" title="SDS"></a>SDS</h4><blockquote>
 <p>Redis里封装字符串基本数据结构<br>由于C语言中并没有string这种类型，而CHAR类型的效率并不高，所以redis自己造轮子实现了一个简单的动态字符串，主要是用来存储Key</p>
 </blockquote>
@@ -24,7 +24,7 @@ Redis介绍REmote DIctionary Server
 <p>• 选择更合理的数据结构 </p>
 <p>• 使用复合命令，如：GETSET、MGET、HMGET、RPUOPLPUSH… </p>
 <p>• 使用PIPELINE</p>
-<h5 id="命令复杂度"><a href="#命令复杂度" class="headerlink" title="命令复杂度"></a>命令复杂度</h5><p><img src="media/15053550850890/15053583779670.jpg" alt=""></p>
+<h5 id="命令复杂度"><a href="#命令复杂度" class="headerlink" title="命令复杂度"></a>命令复杂度</h5><p><img src="http://o8w94dij3.bkt.clouddn.com/redis%E5%91%BD%E4%BB%A4%E5%A4%8D%E6%9D%82%E5%BA%A6.png" alt="命令复杂度"></p>
 <h5 id="高危命令"><a href="#高危命令" class="headerlink" title="高危命令"></a>高危命令</h5><p>• keys*<br>• flushdb<br>• flushall</p>
 <h4 id="内存优化"><a href="#内存优化" class="headerlink" title="内存优化"></a>内存优化</h4><p>• 短Key<br>• int 相关的优化<br>• 选择合理的数据结构<br>• 合理配置list、hash选项 ：list-max-ziplist-entries、hash-zipmap-max-entries等</p>
 <p>• 存储压缩方案(zlib、snappy)（<em>压缩方案和压缩对比测试请看另一篇文章</em>）</p>
